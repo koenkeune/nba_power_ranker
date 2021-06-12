@@ -1,15 +1,12 @@
-from nba_api.stats.static import teams
+from static import *
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.endpoints import teamyearbyyearstats
-from nba_api.stats.endpoints import teamdashboardbyyearoveryear
 import pandas as pd
 
-
 def saveNBAData(saveType, season = 0):
-    nba_teams = teams.get_teams()
-    for nba_team in nba_teams:
-        team_id = nba_team['id']
-        team_name = nba_team['abbreviation']
+    for nba_team in TEAMS:
+        team_id = TEAMS_INFO[nba_team][0]
+        team_name = TEAMS_INFO[nba_team][1]
         if saveType == 'games':
             saveGames(team_id, team_name, season)
         elif saveType == 'teamStats':
@@ -31,7 +28,7 @@ def saveTeamStats(team_id, team_name):
 
 
 # saveNBAData('games', 2019)
-saveNBAData('games', 2020) # you need 2 seasons to get the power ranking of 1 full season
+# saveNBAData('games', 2020) # you need 2 seasons to get the power ranking of 1 full season
 # saveNBAData('teamStats')
 
     
