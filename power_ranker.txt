@@ -1,0 +1,44 @@
+Basic:
+
+Makes a power ranking of all 30 nba teams. The ranking ranks the team that is currently playing the best the highest. This is done by favoring recent results and looking at the strenght of opponents.
+With an iterative ranking.
+
+Multi-criteria decision making (MCDM) model that uses the following factors, from John Hollinger's Power rankings:
+- scoring margin: (538 approach`is to compare it to the expected margin of victory and adjust after each game, they say scoring margin says more than win_perc)
+- strength of schedule: opponents winning percentage and opponents opponents winning percentage, is accounted for by doing it recursively
+- recent performance: at the start first n games, after x% played games (autocorrelation problem)
+- home/road game (538 gives a 3.5 margin for the home team)
+Additonal factors:
+- deviation of scoring margin (to account for 'live by the three, die by the three'-phenomenon)
+- rest days
+- injuries* (difficult to get (historic) data for injuries)
+
+
+
+
+(1) problem formulation, (2) identify the requirements, (3) set goals, (4) identify various alternatives, (5) develop criteria, and (6) identify and apply decision-making technique
+
+
+problem:
+P(win_team_a|team_x) for all teams at any point in the time
+
+
+updates:
+last scoring margin
+
+context:
+home court advantage
+rest days
+
+
+
+
+Additions:
+
+- Show statistical trends
+
+- Write an automated story based on the most note-worthy members of the team
+
+
+
+Input: all the data from the season so far, with a smoothing function that favors recent results and older results increasingly less
