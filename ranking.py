@@ -2,34 +2,51 @@ import pandas as pd
 import datetime
 from static import *
 
-# look at games played in the season
-def rankTeam(team, season, date1):
-    first_week = 52
-    last_week = 19
+# get the ranking of a team from a certain date
+def rankTeams(season, date):
+    # starting point of the ranking:
+    e = winPctLastSeason(season - 1)
+    r = {}
+    for team in TEAMS:
+        r[team] = getEloFromE(e[team])
     
+    # pre-load the needed data:
+    games = {} 
+    for team in TEAMS:
+        fileName = 'files\\'+ team + str(season) + '.csv'
+        teamGames = pd.read_csv(fileName)
+        teamGames['GAME_DATE'] = teamGames['GAME_DATE'].map(converToDateFormat) # in date format
+        games[team] = teamGames
     
-    fileName = 'files\\'+ team + str(season) + '.csv'
-    games = pd.read_csv(fileName)
-    
+    # get ranks:
+    currentDate = converToDateFormat(START_OF_PRESEASON_2020)
+    endDate = converToDateFormat(date)
+    while currentDate <= endDate:
+        print(currentDate)
+
+        for team in TEAMS:
+            game = games[team][games[team]['GAME_DATE'] == currentDate]
+            if not(game.empty):
+                opponent = game['MATCHUP'].to_string()[-3:]
+                mov = int(game['PLUS_MINUS'])
+                s1 = .5
+                if mov > 0:
+                    s1 = 1
+                else:
+                    s1 = 0
+                r1 = r[team]
+                r2 = r[opponent]
+
+
+        currentDate += datetime.timedelta(days = 1)
         
-    
-    dateFormat = converToDateFormat(date1)
-    
-    
-    
-    # games['GAME_DATE'] = pd.to_datetime(games['GAME_DATE'], format='%Y-%m-%d')
-    # games['GAME_DATE'] = games['GAME_DATE'].map(converToDateFormat) # in date format
-    
-    dates_after = games['GAME_DATE'][games['GAME_DATE'] > games['GAME_DATE'][5]]
-    dates_before = games['GAME_DATE'][games['GAME_DATE'] < dateFormat]
+            
+    # fileName = 'files\\'+ team + str(season) + '.csv'
+    # games = pd.read_csv(fileName)
     
     
-    # print(START_OF_SEASON_2020)
-    # print(dateFormatStart.isocalendar()[1])
-    # print(dateFormatEnd.isocalendar()[1])
     
-    # give score of game
-    # penalize based on how far back the game was
+    
     
 # there should have at least one game been played    
 def getStandings(season, date):
@@ -89,6 +106,10 @@ def getElo(r1, r2, s1, k, mov, homeTeam, team):
     r1New = getMovMultiplier(r1, r2, mov)
     
     return(r1New)
+
+def getEloFromE(e):
+    r = 1
+    return(r)
 
 def converToDateFormat(date):
     date = date.split('-')
