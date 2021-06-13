@@ -48,7 +48,7 @@ def rankTeams(season, date):
     
     
     
-# there should have at least one game been played    
+# there should have been at least one game played    
 def getStandings(season, date):
     startDateFormat = converToDateFormat(START_OF_SEASON_2020)
     endDateFormat = converToDateFormat(date)
@@ -83,12 +83,12 @@ def getStandings(season, date):
     return(standings)
     
 def getExpectedWinPct(r1, r2):
-    e = 1 / (10 ^ ((r2 - r1)/400))
+    e = 1 / (10 ** ((r2 - r1)/400))
     
     return(e)
     
 def getMOVMultiplier(mov):
-    movM = ((mov + 3) ^ .8) / (7.5 + 0.006 * (r1 - r2))
+    movM = ((mov + 3) ** .8) / (7.5 + 0.006 * (r1 - r2))
     
     return(movM)
 
@@ -110,6 +110,12 @@ def getElo(r1, r2, s1, k, mov, homeTeam, team):
 def getEloFromE(e):
     r = 1
     return(r)
+    
+def getE(p1,p2):
+    return(p1*(1-p2) / (p1*(1-p2) + p2*(1-p1)))
+
+def winPCTCorrection(p, n):
+    return(p - (p - .5)/(n - 1))
 
 def converToDateFormat(date):
     date = date.split('-')
