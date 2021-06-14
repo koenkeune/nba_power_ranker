@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime
 from static import *
+from calculations import *
 
 # get the ranking of a team from a certain date
 def rankTeams(season, date):
@@ -8,8 +9,10 @@ def rankTeams(season, date):
     e = winPctLastSeason(season - 1)
     r = {}
     for team in TEAMS:
-        r[team] = getEloFromE(e[team])
-    
+        r[team] = getEloFromE(e[team], 1500) # assumes balanced schedule with enough games played
+        
+    rSorted = sorted(r.items(), key=lambda x: x[1], reverse=True)
+        
     # pre-load the needed data:
     games = {} 
     for team in TEAMS:
@@ -22,29 +25,28 @@ def rankTeams(season, date):
     currentDate = converToDateFormat(START_OF_PRESEASON_2020)
     endDate = converToDateFormat(date)
     while currentDate <= endDate:
-        print(currentDate)
-
+        rNew = {} 
         for team in TEAMS:
             game = games[team][games[team]['GAME_DATE'] == currentDate]
             if not(game.empty):
-                opponent = game['MATCHUP'].to_string()[-3:]
-                mov = int(game['PLUS_MINUS'])
+                matchup = game['MATCHUP'].to_string()
+                opponent = matchup[-3:]
+                if matchup.find('@') > -1:
+                    homeTeam = opponent
+                else:
+                    homeTeam = team
+                mov = int(game['PLUS_MINUS']) # margin of victory
                 s1 = .5
                 if mov > 0:
                     s1 = 1
                 else:
                     s1 = 0
-                r1 = r[team]
-                r2 = r[opponent]
-
-
+                rNew[team] = getElo(r[team], r[opponent], s1, 20, mov, homeTeam, team)
+        for team in rNew.keys(): # to prevent adjusting the same game with different r's
+            r[team] = rNew[team]
         currentDate += datetime.timedelta(days = 1)
-        
-            
-    # fileName = 'files\\'+ team + str(season) + '.csv'
-    # games = pd.read_csv(fileName)
     
-    
+    return(r)
     
     
     
@@ -81,41 +83,6 @@ def getStandings(season, date):
         standings[team] = (gamesPlayed, wins, losses, winPct, (wins_10, losses_10), (lastWL, streak))
     
     return(standings)
-    
-def getExpectedWinPct(r1, r2):
-    e = 1 / (10 ** ((r2 - r1)/400))
-    
-    return(e)
-    
-def getMOVMultiplier(mov):
-    movM = ((mov + 3) ** .8) / (7.5 + 0.006 * (r1 - r2))
-    
-    return(movM)
-
-def getHomeAdv(team):
-    
-    return(100)
-    
-def getElo(r1, r2, s1, k, mov, homeTeam, team):
-    if homeTeam == 'team1':
-        r1 + getHomeAdv(team)
-    elif homeTeam == 'team2':
-        r2 + getHomeAdv(team)
-    e1 = getExpectedWinPct(r1, r2)
-    r1New = r1 + k * (s1  - e1)
-    r1New = getMovMultiplier(r1, r2, mov)
-    
-    return(r1New)
-
-def getEloFromE(e):
-    r = 1
-    return(r)
-    
-def getE(p1,p2):
-    return(p1*(1-p2) / (p1*(1-p2) + p2*(1-p1)))
-
-def winPCTCorrection(p, n):
-    return(p - (p - .5)/(n - 1))
 
 def converToDateFormat(date):
     date = date.split('-')

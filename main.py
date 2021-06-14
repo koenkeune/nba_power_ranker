@@ -1,18 +1,15 @@
 from ranking import *
 from visualizer import *
 
-date = '2020-12-11'
-rankTeams(2020, date)
+date = '2021-02-15'
+r = rankTeams(2020, date)
 
-# wP = winPctLastSeason(2019)
-# wPSorted = sorted(wP.items(), key=lambda x: x[1], reverse=True)
-# print(wPSorted)
+rSorted = sorted(r.items(), key=lambda x: x[1], reverse=True)
 
 
 
 
 
-
-#printRanking(wPSorted)
+printRanking(rSorted)
 
 #standings = getStandings(2020, END_OF_SEASON_2020)
