@@ -1,3 +1,4 @@
+import sys
 from static import *
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.endpoints import teamyearbyyearstats
@@ -26,16 +27,11 @@ def saveTeamStats(team_id, team_name):
     fileName = 'files\\'+ team_name +'_teamStats' + '.csv'
     teamStats.to_csv(fileName, index=False, header=True)
 
+if len(sys.argv) == 2:
+    season = int(sys.argv[1])
+else:
+    sys.exit('first argument should be the season of the ranking in yyyy format')
 
-# saveNBAData('games', 2019)
-# saveNBAData('games', 2020) # you need 2 seasons to get the power ranking of 1 full season
-# saveNBAData('teamStats')
-
-    
-    
-
-
-    
-    
-
-
+saveNBAData('games', season - 1) # you need the previous season to get the ranking of the current season
+saveNBAData('games', season) 
+saveNBAData('teamStats')
