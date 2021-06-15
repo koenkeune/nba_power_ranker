@@ -3,7 +3,7 @@ Makes a NBA power ranking of the regular season with the help of an api to get u
 
  How To Use
 ---------------
-Download the following libraries: `nba-api`,  `pandas`, `numpy`, `datetime`
+Download the following libraries: `nba-api` and `pandas`
 
 Download the up-to-date data with `python3 downloader.py [season]` or use the 2020-2021 season data from the files folder.
 
