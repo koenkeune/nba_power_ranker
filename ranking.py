@@ -5,6 +5,8 @@ from calculations import *
 
 # get the ranking of a team from a certain date
 def rankTeams(season, date):
+    k = 30 # how quick should the algorithm react to changes (20 is standard)
+
     # starting point of the ranking:
     e = winPctLastSeason(season - 1)
     r = {}
@@ -23,8 +25,7 @@ def rankTeams(season, date):
     
     # get ranks:
     currentDate = converToDateFormat(START_OF_PRESEASON_2020)
-    endDate = converToDateFormat(date)
-    while currentDate <= endDate:
+    while currentDate <= date:
         rNew = {} 
         for team in TEAMS:
             game = games[team][games[team]['GAME_DATE'] == currentDate]
@@ -41,7 +42,7 @@ def rankTeams(season, date):
                     s1 = 1
                 else:
                     s1 = 0
-                rNew[team] = getElo(r[team], r[opponent], s1, 20, mov, homeTeam, team)
+                rNew[team] = getElo(r[team], r[opponent], s1, k, mov, homeTeam, team)
         for team in rNew.keys(): # to prevent adjusting the same game with different r's
             r[team] = rNew[team]
         currentDate += datetime.timedelta(days = 1)
@@ -52,15 +53,14 @@ def rankTeams(season, date):
     
 # there should have been at least one game played    
 def getStandings(season, date):
-    startDateFormat = converToDateFormat(START_OF_SEASON_2020)
-    endDateFormat = converToDateFormat(date)
+    startDate = converToDateFormat(START_OF_SEASON_2020)
     standings = {}
     for team in TEAMS:
         fileName = 'files\\'+ team + str(season) + '.csv'
         allGames = pd.read_csv(fileName)
         allGames['GAME_DATE'] = allGames['GAME_DATE'].map(converToDateFormat) # in date format
-        games = allGames[allGames['GAME_DATE'] <= endDateFormat]
-        games = games[games['GAME_DATE'] >= startDateFormat]
+        games = allGames[allGames['GAME_DATE'] <= date]
+        games = games[games['GAME_DATE'] >= startDate]
         gamesPlayed = len(games)
         wins = len(games[games['WL'] == 'W'])
         losses = len(games[games['WL'] == 'L'])
