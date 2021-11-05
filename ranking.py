@@ -24,7 +24,8 @@ def rankTeams(season, date):
         games[team] = teamGames
     
     # get ranks:
-    currentDate = converToDateFormat(START_OF_PRESEASON_2020)
+    preseasonDate = 'START_OF_PRESEASON_' + str(season)
+    currentDate = converToDateFormat(SCHEDULE_DATES[preseasonDate])
     while currentDate <= date:
         rNew = {} 
         for team in TEAMS:
@@ -53,7 +54,8 @@ def rankTeams(season, date):
     
 # there should have been at least one game played    
 def getStandings(season, date):
-    startDate = converToDateFormat(START_OF_SEASON_2020)
+    startSeasonDate = 'START_OF_SEASON_' + str(season)
+    startDate = converToDateFormat(SCHEDULE_DATES[startSeasonDate])
     standings = {}
     for team in TEAMS:
         fileName = 'files\\'+ team + str(season) + '.csv'
@@ -93,6 +95,6 @@ def winPctLastSeason(season):
     for team in TEAMS:
         fileName = 'files\\'+ team + '_teamStats' + '.csv'
         teamStats = pd.read_csv(fileName)
-        year = str(season) + '-' + str(season - 2000 + 1)
+        year = str(season - 1) + '-' + str(season - 2000)
         wP[team] = float(teamStats[teamStats['YEAR'] == year]['WIN_PCT'])
     return(wP)
