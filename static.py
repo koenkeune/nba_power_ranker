@@ -1,4 +1,7 @@
 SCHEDULE_DATES = {
+    'START_OF_PRESEASON_2020' : '2019-09-30',
+    'START_OF_SEASON_2020' : '2019-10-22',
+    'END_OF_SEASON_2020' : '2020-03-11', # some teams continued
     'START_OF_PRESEASON_2021' : '2020-12-11',
     'START_OF_SEASON_2021' : '2020-12-22',
     'END_OF_SEASON_2021' : '2021-05-16',
@@ -10,7 +13,7 @@ TEAMS = ['ATL', 'BOS', 'CLE', 'NOP', 'CHI', 'DAL', 'DEN', 'GSW', 'HOU', 'LAC', '
     'MIN', 'BKN', 'NYK', 'ORL', 'IND', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'OKC', 'TOR', 'UTA', 
     'MEM', 'WAS', 'DET', 'CHA']
 
-TEAMS_INFO = {'ATL': [1610612737, 'ATL', 'Hawks', 1949, 'Atlanta', 'Atlanta Hawks', 'Atlanta'], 
+TEAMS_INFO = {'ATL': [1610612737, 'ATL', 'Hawks', 1949, 'Atlanta', 'Atlanta Hawks', 'Georgia'], 
               'BOS': [1610612738, 'BOS', 'Celtics', 1946, 'Boston', 'Boston Celtics', 'Massachusetts'], 
               'CLE': [1610612739, 'CLE', 'Cavaliers', 1970, 'Cleveland', 'Cleveland Cavaliers', 'Ohio'], 
               'NOP': [1610612740, 'NOP', 'Pelicans', 2002, 'New Orleans', 'New Orleans Pelicans', 'Louisiana'], 

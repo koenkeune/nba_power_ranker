@@ -4,8 +4,10 @@ from static import *
 from calculations import *
 
 # get the ranking of a team from a certain date
-def rankTeams(season, date):
+def rankTeams(date):
+    season = getSeasonFromDate(date)
     k = 30 # how quick should the algorithm react to changes (20 is standard)
+    k_pre = k/2 # preseason k
 
     # starting point of the ranking:
     e = winPctLastSeason(season - 1)
@@ -25,11 +27,15 @@ def rankTeams(season, date):
     
     # get ranks:
     preseasonDate = 'START_OF_PRESEASON_' + str(season)
-    currentDate = converToDateFormat(SCHEDULE_DATES[preseasonDate])
-    while currentDate <= date:
+    loopDate = converToDateFormat(SCHEDULE_DATES[preseasonDate])
+    startSeasonDate = 'START_OF_SEASON_' + str(season)
+    startSeasonDate = converToDateFormat(SCHEDULE_DATES[startSeasonDate])
+    endSeasonDate = 'END_OF_SEASON_' + str(season)
+    endSeasonDate =  converToDateFormat(SCHEDULE_DATES[endSeasonDate])
+    while (loopDate <= date) and (loopDate <= endSeasonDate):
         rNew = {} 
         for team in TEAMS:
-            game = games[team][games[team]['GAME_DATE'] == currentDate]
+            game = games[team][games[team]['GAME_DATE'] == loopDate]
             if not(game.empty):
                 matchup = game['MATCHUP'].to_string()
                 opponent = matchup[-3:]
@@ -43,17 +49,20 @@ def rankTeams(season, date):
                     s1 = 1
                 else:
                     s1 = 0
-                rNew[team] = getElo(r[team], r[opponent], s1, k, mov, homeTeam, team)
+                if  loopDate < startSeasonDate:
+                    rNew[team] = getElo(r[team], r[opponent], s1, k_pre, mov, homeTeam, team)
+                else:
+                    rNew[team] = getElo(r[team], r[opponent], s1, k, mov, homeTeam, team)
+                
         for team in rNew.keys(): # to prevent adjusting the same game with different r's
             r[team] = rNew[team]
-        currentDate += datetime.timedelta(days = 1)
+        loopDate += datetime.timedelta(days = 1)
     
     return(r)
     
-    
-    
 # there should have been at least one game played    
-def getStandings(season, date):
+def getStandings(date):
+    season = getSeasonFromDate(date)
     startSeasonDate = 'START_OF_SEASON_' + str(season)
     startDate = converToDateFormat(SCHEDULE_DATES[startSeasonDate])
     standings = {}
@@ -98,3 +107,13 @@ def winPctLastSeason(season):
         year = str(season - 1) + '-' + str(season - 2000)
         wP[team] = float(teamStats[teamStats['YEAR'] == year]['WIN_PCT'])
     return(wP)
+
+def getSeasonFromDate(date):
+    season = int(date.year)
+    preseasonDate = 'START_OF_PRESEASON_' + str(season + 1)
+    if date > converToDateFormat(SCHEDULE_DATES[preseasonDate]):
+        return(season + 1)
+    else:
+        return(season)
+    
+    
